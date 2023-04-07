@@ -41,6 +41,11 @@ std::vector<Drawable*>* Renderer::getDrawables()
 	return &drawables;
 }
 
+std::unordered_map<int, Collider*>* Renderer::getCols()
+{
+	return &cols;
+}
+
 void Renderer::ClearScreen()
 {
 	// clears the screen

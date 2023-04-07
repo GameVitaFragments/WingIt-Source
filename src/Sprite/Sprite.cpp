@@ -16,8 +16,8 @@ Sprite::Sprite(Renderer* rend, const char* path,bool _collisionDet):
 	if (!_collisionDet)
 		return;
 	col = new Collider(this);
+	rend->getCols()->insert(std::make_pair(col->getID(), col));
 	CollisionDet = true;
-
 }
 
 void Sprite::update(SDL_Renderer* rend) 
@@ -28,7 +28,7 @@ void Sprite::update(SDL_Renderer* rend)
 		return;
 
 	SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
-	SDL_Rect n_rect = { rect.x, rect.y,col->getBoundBox().x,col->getBoundBox().y};
+	SDL_Rect n_rect = { rect.x, rect.y,col->getBoundBox().x-rect.x,col->getBoundBox().y-rect.y};
 	error::checkReturnCode(SDL_RenderDrawRect(rend, &n_rect));
 	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
 	
@@ -40,6 +40,11 @@ Collider* Sprite::getCol()
 	if (CollisionDet)
 		return col;
 	return nullptr;
+}
+
+void Sprite::isCollided()
+{
+	printf("Yay!!! Collided!!");
 }
 
 Sprite::Sprite(Renderer* rend, const SDL_Color Color)
