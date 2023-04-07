@@ -1,6 +1,8 @@
 #pragma once
 #include "SDL2/SDL.h"
+#include "../Error/Error.h"
 #include "../Renderer/Renderer.h"
+#include "../Event/EventHandler.h"
 
 class Game {
 	private:
@@ -11,9 +13,8 @@ class Game {
 		float _fps;
 
 		SDL_Window* _window;
-		//SDL_Renderer* _renderer;
-		Renderer* _renderer;
-
+		SDL_Renderer* _renderer;
+		EventHandler* _eventhandler;
 		Uint32 _render_flags;
 
 		void _init();

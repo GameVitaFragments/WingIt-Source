@@ -1,7 +1,4 @@
 #include "Game.h"
-#include "../Error/Error.h"
-
-#include <iostream>
 
 Game::Game(unsigned int w, unsigned int h, const char* t) {
 	_width = w;
@@ -19,7 +16,8 @@ Game::Game(unsigned int w, unsigned int h, const char* t) {
 			SDL_WINDOWPOS_CENTERED, 
 			_width, _height, 0));
 
-	_renderer = new Renderer(_window, _render_flags);
+	_renderer = (SDL_Renderer*)error::checkReturnPointer(SDL_CreateRenderer(_window, -1, _render_flags));
+	_eventhandler = (EventHandler*)error::checkReturnPointer(new EventHandler);
 }
 
 void Game::_init() {
@@ -27,7 +25,7 @@ void Game::_init() {
 
 void Game::update() {
 
-	SDL_Texture* tex = Renderer::loadTex(_renderer, "src/Assets/Wallpaper.png");
+	SDL_Texture* tex = Renderer::LoadTex(_renderer, "src/Assets/Wallpaper.png");
 	SDL_Rect rect;
 	SDL_QueryTexture(tex, NULL, NULL, &rect.w, &rect.h);
 	rect.x = 0;
@@ -35,22 +33,19 @@ void Game::update() {
 
 	while ( !_isGameClosed ) {
 		SDL_Event event;
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				_isGameClosed = true;
-			}
-		}
-		SDL_RenderClear(_renderer->GetRenderer());
-		SDL_RenderCopy(_renderer->GetRenderer(), tex, NULL, &rect);
-		SDL_RenderPresent(_renderer->GetRenderer());
+		_eventhandler->setInput(&event);
+		_isGameClosed = _eventhandler->isQuit();
+		SDL_RenderClear(_renderer);
+		SDL_RenderCopy(_renderer, tex, NULL, &rect);
+		SDL_RenderPresent(_renderer);
 		SDL_Delay(1000 / _fps);
 	}
-	
+
 	SDL_DestroyTexture(tex);
 }
 
 Game::~Game() {
-	delete _renderer;
+	SDL_DestroyRenderer(_renderer);
 	SDL_DestroyWindow(_window);
 	SDL_Quit();
 }
