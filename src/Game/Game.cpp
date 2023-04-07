@@ -45,6 +45,7 @@ void Game::update() {
 }
 
 Game::~Game() {
+	delete(_eventhandler);
 	SDL_DestroyRenderer(_renderer);
 	SDL_DestroyWindow(_window);
 	SDL_Quit();
