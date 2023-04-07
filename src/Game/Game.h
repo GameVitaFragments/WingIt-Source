@@ -13,8 +13,9 @@ class Game {
 		float _fps;
 
 		SDL_Window* _window;
-		SDL_Renderer* _renderer;
+		Renderer* _renderer;
 		EventHandler* _eventhandler;
+
 		Uint32 _render_flags;
 
 		void _init();
