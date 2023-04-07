@@ -1,0 +1,7 @@
+.vs/
+Debug/
+*.vcxproj
+*.filters
+*.user
+*.sln
+UpgradeLog.htm
