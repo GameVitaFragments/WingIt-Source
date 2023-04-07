@@ -1,5 +1,6 @@
 #pragma once
 #include "../Renderer/Renderer.h"
+#include "../Collider/Collider.h"
 
 
 class Sprite:
@@ -7,9 +8,15 @@ class Sprite:
 {
 
 public:
-	Sprite(Renderer*,const char*);
+	Sprite(Renderer*,const char*,bool);
+	Sprite(Renderer*, const SDL_Color Color);
 	~Sprite();
-		
+
+	virtual void update(SDL_Renderer* rend);
+	Collider* getCol();
+private:
+	bool CollisionDet = false;
+	Collider* col;
 
 };
 

@@ -1,5 +1,5 @@
 #include "Renderer.h"
-#include"../Error/Error.h"
+
 
 Renderer::Renderer(SDL_Window* win,Uint32 renderFlags):
 	rend(nullptr)
@@ -10,6 +10,9 @@ Renderer::Renderer(SDL_Window* win,Uint32 renderFlags):
 
 Renderer::~Renderer() {
 	// destroy renderer
+	for (auto i : drawables) {
+		delete i;
+	}
 	SDL_DestroyRenderer(rend);
 }
 
@@ -18,7 +21,9 @@ void Renderer::update(){
 
 
 	for (auto i : drawables) {
-		i->update(rend);
+		if(i!=nullptr)
+			i->update(rend);
+
 	}
 
 	// triggers the double buffers
@@ -66,7 +71,7 @@ SDL_Texture* Renderer::loadFont(Renderer* rend, const char* _text)
 
 	TTF_Font* font;
 
-	font = TTF_OpenFont("src/Assets/arial.ttf", 24);
+	font = (TTF_Font*)error::checkReturnPointer(TTF_OpenFont("src/Assets/arial.ttf", 24));
 	if (!font) {
 		printf("Failed to Load Font: %s", SDL_GetError());
 	}
@@ -88,3 +93,5 @@ SDL_Texture* Renderer::loadFont(Renderer* rend, const char* _text)
 	SDL_FreeSurface(text);
 	return text_texture;
 }
+
+
