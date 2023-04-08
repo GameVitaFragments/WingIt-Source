@@ -8,9 +8,14 @@ void Player::checkCollision(Renderer* _rend)
 {
 	//Player Collider
 	Collider* _playerCol = this->getCol();
+	if (_playerCol == nullptr) {
+		return;
+	}
 	vec::Vec2 PlayerPos = { this->getPosX(), this->getPosY() };
 	vec::Vec2 PlayerBound = _playerCol->getBoundBox();
 	for (auto col : *_rend->getCols()) {
+		if (col.second == nullptr)
+			continue;
 		bool colX = false, colY = false;
 
 		if (_playerCol == col.second) {

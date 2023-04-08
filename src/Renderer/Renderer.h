@@ -20,7 +20,8 @@ public:
 	void update();
 	SDL_Renderer* GetRenderer();
 	std::vector<Drawable*>* getDrawables();
-	std::unordered_map<int, Collider*>* getCols();
+	static std::unordered_map<int, Collider*> cols;
+	static std::unordered_map<int, Collider*>* getCols();
 	void ClearScreen();
 	static SDL_Texture* loadTex(Renderer*,const char*);
 	static SDL_Texture* loadFont(Renderer* ,const char*);
@@ -29,6 +30,5 @@ public:
 private:
 	SDL_Renderer* rend;
 	std::vector<Drawable*> drawables;
-	std::unordered_map<int, Collider*> cols;
 };
 

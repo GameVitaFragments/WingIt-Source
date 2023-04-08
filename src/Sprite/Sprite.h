@@ -15,6 +15,7 @@ public:
 	virtual void update(SDL_Renderer* rend);
 	Collider* getCol();
 	void isCollided();
+	virtual void Destroy();
 private:
 	bool CollisionDet = false;
 	Collider* col;

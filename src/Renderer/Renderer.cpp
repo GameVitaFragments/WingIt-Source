@@ -46,6 +46,8 @@ std::unordered_map<int, Collider*>* Renderer::getCols()
 	return &cols;
 }
 
+std::unordered_map<int, Collider*> Renderer::cols = { {-1, nullptr} };
+
 void Renderer::ClearScreen()
 {
 	// clears the screen

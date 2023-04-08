@@ -24,7 +24,7 @@ void Sprite::update(SDL_Renderer* rend)
 {
 	Drawable::update(rend);
 	//printf("%d\n",CollisionDet);
-	if (!CollisionDet)
+	if (!CollisionDet || col == nullptr)
 		return;
 
 	SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
@@ -37,6 +37,9 @@ void Sprite::update(SDL_Renderer* rend)
 
 Collider* Sprite::getCol()
 {
+	if (col == nullptr) {
+		return nullptr;
+	}
 	if (CollisionDet)
 		return col;
 	return nullptr;
@@ -63,6 +66,18 @@ Sprite::Sprite(Renderer* rend, const SDL_Color Color)
 Sprite::~Sprite()
 {
 	SDL_DestroyTexture(tex);
-	if (CollisionDet)
+	if (CollisionDet) {
+		Renderer::cols[col->getID()] = nullptr;
 		delete col;
+		col = nullptr;
+	}
+}
+
+void Sprite::Destroy() {
+	if (CollisionDet && col != nullptr) {
+		Renderer::cols[col->getID()] = nullptr;
+		delete col;
+		col = nullptr;
+	}
+	Drawable::Destroy();
 }
