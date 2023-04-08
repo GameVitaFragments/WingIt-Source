@@ -71,6 +71,7 @@ Sprite::~Sprite()
 		delete col;
 		col = nullptr;
 	}
+	tex = nullptr;
 }
 
 void Sprite::Destroy() {

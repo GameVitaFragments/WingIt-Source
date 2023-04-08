@@ -10,9 +10,6 @@ Renderer::Renderer(SDL_Window* win,Uint32 renderFlags):
 
 Renderer::~Renderer() {
 	// destroy renderer
-	for (auto i : drawables) {
-		i->Destroy();
-	}
 	SDL_DestroyRenderer(rend);
 }
 

@@ -88,5 +88,6 @@ void Drawable::setAngle(double _angle)
 
 void Drawable::Destroy()
 {
+	SDL_DestroyTexture(tex);
 	tex = nullptr;
 }
