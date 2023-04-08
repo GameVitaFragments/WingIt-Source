@@ -314,6 +314,7 @@ void Game::update() {
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double dt = 0;
+	Player player(_renderer, "src/Assets/player.png", true, _eventhandler, 640, 50, 50, 0.0f);
 
 	while (!_isGameClosed) {
 		_renderer->ClearScreen();
@@ -328,6 +329,7 @@ void Game::update() {
 
 		dt = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
 		float currentFPS = 1000.0 / dt;
+		player.getDt(dt);
 		
 		SDL_Delay(1000 / _fps);
 		_lastFrameTick = SDL_GetTicks64();
