@@ -7,6 +7,11 @@ namespace vec {
 		int x;
 		int y;
 	};
+	struct Vec2f
+	{
+		float x;
+		float y;
+	};
 }
 class Collider
 {

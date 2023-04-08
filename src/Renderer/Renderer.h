@@ -17,6 +17,7 @@ class Renderer
 public:
 	Renderer(SDL_Window*, Uint32);
 	~Renderer();
+	//void killRenderer();
 	void update();
 	SDL_Renderer* GetRenderer();
 	std::vector<Drawable*>* getDrawables();

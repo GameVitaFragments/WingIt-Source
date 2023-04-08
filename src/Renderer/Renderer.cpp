@@ -11,15 +11,21 @@ Renderer::Renderer(SDL_Window* win,Uint32 renderFlags):
 Renderer::~Renderer() {
 	// destroy renderer
 	for (auto i : drawables) {
-		delete i;
+		i->Destroy();
 	}
 	SDL_DestroyRenderer(rend);
 }
 
+//void Renderer::killRenderer() {
+//	for (auto i : drawables) {
+//		i->Destroy();
+//	}
+//	SDL_DestroyRenderer(rend);
+//}
+
+
+
 void Renderer::update(){
-
-
-
 	for (auto i : drawables) {
 		if(i!=nullptr)
 			i->update(rend);
