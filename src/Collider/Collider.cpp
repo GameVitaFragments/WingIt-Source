@@ -23,7 +23,7 @@ void Collider::setBoundBox()
 	}
 	boundBox.x = sp->getPosX() + sp->getWidth();
 	boundBox.y = sp->getPosY() + sp->getHeight();
-	printf("%d", _colID);
+	//printf("%d", _colID);
 }
 
 void Collider::updateBoundBox(int oldx,int oldy)

@@ -61,7 +61,8 @@ SDL_Texture* Renderer::loadTex(Renderer* rend,const char* path)
 		SDL_Surface* surface;
 		surface = IMG_Load(path);
 
-	
+		//Background Removal Color Key
+		error::checkReturnCode(SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0xFF, 0xFF, 0xFF)));
 		//ERROR HANDLE HERE
 
 		// loads image to our graphics hardware memory.
