@@ -2,16 +2,16 @@
 #include <cmath>
 #include <iostream>
 
-Player::Player(Renderer* rend, const char* path, bool _collisionDet, EventHandler* event, int x, int y, int size, float gravity) : Sprite(rend, path, _collisionDet)
+Player::Player(Renderer* rend, const char* path, bool _collisionDet, EventHandler* event, int x, int y, float scale, float gravity) : Sprite(rend, path, _collisionDet)
 {
 	this->event = event;
 	this->vel = { 0, 0 };
 	this->acc = { 0, 0 };
 	this->dt = 0;
 	this->gravity = gravity;
-	gunBlastForce = 2;
+	gunBlastForce = gravity * 1.5;
 	setPos({ x, y });
-	setSize({ size, size });
+	setSize({ (int)(getWidth() * scale), (int)(getHeight() * scale)});
 }
 
 void Player::checkCollision(Renderer* _rend)
@@ -64,6 +64,24 @@ void Player::update(SDL_Renderer* rend) {
 
 	reCentre();
 	setAngle((int)(180 * angle / M_PI));
+
+	if (getPosX() <= Global::wallWidth) {
+		float bounceForce = 4;
+		this->vel.x = bounceForce *  1;
+		this->vel.y = bounceForce * -1;
+	}
+	if (getPosX() >= Global::ScreenWidth - Global::wallWidth - getWidth()) {
+		float bounceForce = 4;
+		this->vel.x = bounceForce * -1;
+		this->vel.y = bounceForce * -1;
+	}
+
+	if (this->vel.x > 0) {
+		facingLeft = false;
+	}
+	else {
+		facingLeft = true;
+	}
 
 
 	//std::cout << cos(angle) << ", " << -sin(angle) << std::endl;

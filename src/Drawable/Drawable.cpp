@@ -3,9 +3,15 @@
 
 
 void Drawable::update(SDL_Renderer* rend) {
-	
-	if(tex != nullptr)
-		SDL_RenderCopyEx(rend, tex, NULL, &rect,angle,&centre,SDL_FLIP_NONE);
+
+	if (tex != nullptr) {
+		if (facingLeft) {
+			SDL_RenderCopyEx(rend, tex, NULL, &rect, angle, &centre, SDL_FLIP_VERTICAL);
+		}
+		else {
+			SDL_RenderCopyEx(rend, tex, NULL, &rect, angle, &centre, SDL_FLIP_NONE);
+		}
+	}
 }
 
 int Drawable::getHeight() const

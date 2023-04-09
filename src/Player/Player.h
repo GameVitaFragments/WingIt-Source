@@ -14,7 +14,7 @@ private:
 	Uint32 timeSinceShot;
 
 public:
-	Player(Renderer*, const char*, bool, EventHandler*, int, int, int, float);
+	Player(Renderer*, const char*, bool, EventHandler*, int, int, float, float);
 	void checkCollision(Renderer*);
 	void update(SDL_Renderer* rend);
 	void getDt(double);

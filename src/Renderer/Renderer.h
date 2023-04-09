@@ -10,6 +10,13 @@
 #include <unordered_map>
 #include <string>
 
+class Global {
+public:
+	static int wallWidth;
+	static int ScreenWidth;
+	static int ScreenHeight;
+};
+
 
 class Renderer
 {

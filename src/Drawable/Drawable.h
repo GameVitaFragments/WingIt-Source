@@ -32,6 +32,7 @@ protected:
 	SDL_Rect rect;
 	SDL_Point centre;
 	double angle;
+	bool facingLeft = false;
 
 };
 

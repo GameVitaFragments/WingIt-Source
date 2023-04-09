@@ -1,59 +1,8 @@
 #include "Game.h"
 #include <iostream>
+#include <vector>
 
-class ScreenResolution
-{
-public:
-	static int ScreenWidth;
-	static int ScreenHeight;
 
-};
-int ScreenResolution::ScreenWidth = 0;
-int ScreenResolution::ScreenHeight = 0;
-
-namespace ui {
-	class Button : public Sprite {
-	private:
-		float maxSizeRatio = 1.3;
-		float minSizeRatio = 1.0;
-		float initialWidth;
-		float initialHeight;
-
-	public:
-		Button(Renderer* rend, const char* path, bool _collisionDet) : Sprite(rend, path, _collisionDet) {
-			initialWidth = 300;
-			initialHeight = 200;
-			setSize({ (int)initialWidth, (int)initialHeight });
-		}
-
-		void hover(int mx, int my) {
-			if (mx > getPosX() && mx < (getPosX() + getWidth()) && my > getPosY() && my < (getPosY() + getHeight())) {
-				if (getWidth() < (maxSizeRatio * initialWidth)) {
-					float dx = ((maxSizeRatio * initialWidth) - getWidth());
-					setWidth(getWidth() + dx);
-					setPosX(getPosX() - dx / 2.0);
-				}
-				if (getHeight() < (maxSizeRatio * initialHeight)) {
-					float dx = ((maxSizeRatio * initialHeight) - getHeight());
-					setHeight(getHeight() + dx);
-					setPosY(getPosY() - dx / 2.0);
-				}
-			}
-			else {
-				if (getWidth() > initialWidth) {
-					float dx = getWidth() - initialWidth;
-					setWidth(getWidth() - dx);
-					setPosX(getPosX() + dx / 2.0);
-				}
-				if (getHeight() > initialHeight) {
-					float dx = getHeight() - initialHeight;
-					setHeight(getHeight() - dx);
-					setPosY(getPosY() + dx / 2.0);
-				}
-			}
-		}
-	};
-}
 
 class RougeRock :
 	public Sprite
@@ -106,36 +55,36 @@ public:
 	void reSpawnTop() {
 		if (!CheckOutOfBounds())
 			return;
-		//int SpAreaX = (rand() % (wallWidth - (ScreenResolution::ScreenWidth - rect.w - wallWidth)) + wallWidth);
+		//int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth - rect.w - wallWidth)) + wallWidth);
 		int rockType = rand() % 2;
 		if (rockType) {
-			int SpAreaX = (rand() % (wallWidth - (ScreenResolution::ScreenWidth - rect.w - wallWidth)) + wallWidth);
+			int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth - rect.w - wallWidth)) + wallWidth);
 			Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
 			_velocity.y = 10;
-			printf("%d \n", SpAreaX);
+			//printf("%d \n", SpAreaX);
 		}
 		else {
 			int spawnPos = rand() % 2;
 			if (spawnPos) {
-				int SpAreaX = (rand() % (wallWidth - (ScreenResolution::ScreenWidth / 2 - rect.w - wallWidth)) + wallWidth);
+				int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth / 2 - rect.w - wallWidth)) + wallWidth);
 				Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
 				_velocity.x = -3;
 				_velocity.y = 10;
-				printf("%d \n", SpAreaX);
+				//printf("%d \n", SpAreaX);
 			}
 			else {
-				int SpAreaX = (rand() % (wallWidth - (ScreenResolution::ScreenWidth / 2 - rect.w - wallWidth)) + ScreenResolution::ScreenWidth / 2);
+				int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth / 2 - rect.w - wallWidth)) + Global::ScreenWidth / 2);
 				Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
 				_velocity.x = 3;
 				_velocity.y = 10;
-				printf("%d \n", SpAreaX);
+				//printf("%d \n", SpAreaX);
 			}
 		}
 	}
 
 	bool CheckOutOfBounds()
 	{
-		if (rect.y > ScreenResolution::ScreenHeight) {
+		if (rect.y > Global::ScreenHeight) {
 			return true;
 		}
 		return false;
@@ -174,7 +123,7 @@ public:
 
 		//printf("Hai Out");
 		// (rand() % (ub - lb + 1)) + lb
-		int SpAreaX = (rand() % (wallWidth - (ScreenResolution::ScreenWidth - rect.w - wallWidth)) + wallWidth);
+		int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth - rect.w - wallWidth)) + wallWidth);
 		Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
 		_velocity.y = (_velocity.y - 20) / 2;
 		//printf("%d \n", SpAreaX);
@@ -182,8 +131,8 @@ public:
 
 	bool CheckOutOfBounds()
 	{
-		if (rect.y > ScreenResolution::ScreenHeight) {
-			//printf("%d %d\n",rect.y, ScreenResolution::ScreenHeight);
+		if (rect.y > Global::ScreenHeight) {
+			//printf("%d %d\n",rect.y, Global::ScreenHeight);
 			return true;
 		}
 		return false;
@@ -199,7 +148,7 @@ public:
 
 
 		//Smooth Velocity
-		printf("%f %f\n", _velocity.x, _velocity.y);
+		//printf("%f %f\n", _velocity.x, _velocity.y);
 		_position.x -= (int)_velocity.x;
 		_positionF.x += _velocity.x - (int)_velocity.x;
 		if (_positionF.x >= 1) {
@@ -261,7 +210,7 @@ public:
 
 	bool CheckOutOfBounds()
 	{
-		if (rect.y > ScreenResolution::ScreenHeight) {
+		if (rect.y > Global::ScreenHeight) {
 			return true;
 		}
 		return false;
@@ -275,8 +224,8 @@ Game::Game(unsigned int w, unsigned int h, const char* t) {
 	_render_flags = SDL_RENDERER_ACCELERATED;
 	_isGameClosed = false;
 	_fps = 60;
-	ScreenResolution::ScreenHeight = _height;
-	ScreenResolution::ScreenWidth = _width;
+	Global::ScreenHeight = _height;
+	Global::ScreenWidth = _width;
 	error::checkReturnCode(SDL_Init(SDL_INIT_EVERYTHING));
 
 	_window = (SDL_Window*)error::checkReturnPointer(SDL_CreateWindow(
@@ -307,14 +256,28 @@ void Game::update() {
 	bal.setPos({ 500,500 });
 	bal.setSize({ bal.getWidth() / 6 ,bal.getHeight() / 6 });
 
-	Wall wall(_renderer, "src/assets/Wallpaper.png", true, 10);
-	wall.setPos({ 0, 0 });
-	wall.setSize({75, 720});
+	//Wall wall(_renderer, "src/assets/Wallpaper.png", true, 10);
+	//wall.setPos({ 0, 0 });
+	//wall.setSize({75, 720});
+
+	Wall* leftwalls[3];
+	for (int i = 0; i < 3; i++) {
+		leftwalls[i] = new Wall(_renderer, "src/assets/Wallpaper.png", true, 10);
+		leftwalls[i]->setPos({0, -i * Global::ScreenHeight});
+		leftwalls[i]->setSize({Global::wallWidth, Global::ScreenHeight});
+	}
+
+	Wall* rightwalls[3];
+	for (int i = 0; i < 3; i++) {
+		rightwalls[i] = new Wall(_renderer, "src/assets/Wallpaper.png", true, 10);
+		rightwalls[i]->setPos({Global::ScreenWidth - Global::wallWidth, -i * Global::ScreenHeight});
+		rightwalls[i]->setSize({Global::wallWidth, Global::ScreenHeight});
+	}
 
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double dt = 0;
-	Player player(_renderer, "src/Assets/player.png", true, _eventhandler, 640, 50, 50, 0.0f);
+	Player player(_renderer, "src/Assets/bird1.png", true, _eventhandler, 640, 50, 0.1, 3.0f);
 
 	while (!_isGameClosed) {
 		_renderer->ClearScreen();
@@ -333,6 +296,11 @@ void Game::update() {
 		
 		SDL_Delay(1000 / _fps);
 		_lastFrameTick = SDL_GetTicks64();
+	}
+
+	for (int i = 0; i < 3; i++) {
+		delete leftwalls[i];
+		delete rightwalls[i];
 	}
 }
 
