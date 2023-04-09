@@ -2,6 +2,58 @@
 #include <iostream>
 #include <vector>
 
+namespace ui {
+	class Button : public Sprite {
+	private:
+		float maxSizeRatio = 1.3;
+		float minSizeRatio = 1.0;
+		float initialWidth;
+		float initialHeight;
+		vec::Vec2 initialPos;
+
+	public:
+		bool clicked = false;
+
+		Button(Renderer* rend, const char* path, bool _collisionDet, int scale, vec::Vec2 pos) : Sprite(rend, path, _collisionDet) {
+			setSize({ ((int)getWidth() * scale), ((int)getHeight() * scale) });
+			initialPos = pos;
+			setPos({ pos.x, pos.y });
+			initialWidth = getWidth();
+			initialHeight = getHeight();
+			setSize({ (int)initialWidth, (int)initialHeight });
+		}
+
+		void hover(int mx, int my, bool click) {
+			if (mx > getPosX() && mx < (getPosX() + getWidth()) && my > getPosY() && my < (getPosY() + getHeight())) {
+				int currWidth = getWidth();
+				if (currWidth < (int)(maxSizeRatio * initialWidth)) {
+					float dx = ((int)(maxSizeRatio * initialWidth) - currWidth);
+					setWidth(currWidth + dx);
+					setPosX(getPosX() - dx / 2.0);
+				}
+				if (getHeight() < (int)(maxSizeRatio * initialHeight)) {
+					float dx = ((int)(maxSizeRatio * initialHeight) - getHeight());
+					setHeight(getHeight() + dx);
+					setPosY(getPosY() - dx / 2.0);
+				}
+				if (click) {
+					clicked = true;
+				}
+			}
+			else {
+				if (getWidth() > initialWidth) {
+					setWidth(initialWidth);
+					setPosX(initialPos.x);
+				}
+				if (getHeight() > initialHeight) {
+					setHeight(initialHeight);
+					setPosY(initialPos.y);
+				}
+			}
+		}
+	};
+}
+
 class  HealthUI
 {
 public:
@@ -211,6 +263,7 @@ Game::Game(unsigned int w, unsigned int h, const char* t, SDL_Window* win, Rende
 	_renderer = ren;
 	_eventhandler = even;
 
+
 	/*_window = (SDL_Window*)error::checkReturnPointer(SDL_CreateWindow(
 		_title,
 		SDL_WINDOWPOS_CENTERED,
@@ -233,6 +286,8 @@ void Game::_init() {
 void Game::update() {
 	double points =0;
 
+	
+	
 	Sprite wallpaper(_renderer, "src/Assets/sky.png", true);
 	wallpaper.setPos({ 0, 0 });
 	wallpaper.setSize({ (int)_width, (int)_height });
@@ -271,6 +326,8 @@ void Game::update() {
 
 	HealthUI hui(_renderer, "src/Assets/heart.png", {Global::ScreenWidth-120,25});
 	PointsUI pui(_renderer, "src/Assets/Arrow.png", {Global::ScreenWidth/2,Global::ScreenHeight-50});
+
+	ui::Button* ReplayButton = nullptr;
 	//End UI Area
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
@@ -292,13 +349,44 @@ void Game::update() {
 		SDL_Event event;
 		_eventhandler->setInput(&event);
 		_isGameClosed = _eventhandler->isQuit();
+		
+		if (player.Hearts == -10) {
+			
+			//error::checkReturnCode(-1);
 
-		if (player.Hearts < 0) {
+			int mx = _eventhandler->getPos('x');
+			int my = _eventhandler->getPos('y');
+			ReplayButton->hover(mx, my, _eventhandler->getMSInput('1'));
+			bool clicked = ReplayButton->clicked;
+			//_renderer->update();
+			if (clicked) {
+				player.Hearts = 5;
+				points = 0;
+				dt = 0;
+
+				player.setPos({ 640, 50 });
+
+				delete ReplayButton;
+				ReplayButton = nullptr;
+				_renderer->getDrawables()->pop_back();
+			}
+			
+			continue;
+		}
+		if (player.Hearts == -1) {
+			lowHealthSound.freeAudio();
 			deathSound.playSound();
 			deathSound.setVolume(200);
+			lowHealthSound.attAudio("src/Assets/Audio/owsong.wav", false);
+
+			ReplayButton= new ui::Button(_renderer, "src/Assets/play1.png", false, 1, { 800,600 });
+			_renderer->ClearScreen();
+			_renderer->update();
+			player.Hearts = -10;
 			continue;
 		}
 
+		
 		_renderer->ClearScreen();
 		_renderer->update();
 		player.checkCollision(_renderer);
@@ -336,7 +424,8 @@ void Game::update() {
 		dt = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
 		float currentFPS = 1000.0 / dt;
 		player.getDt(dt);
-		points += dt / 1000;
+		points += 0.02;
+		//printf("%d", points);
 		
 		SDL_Delay(1000 / _fps);
 		_lastFrameTick = SDL_GetTicks64();

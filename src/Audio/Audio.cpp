@@ -49,6 +49,17 @@ int Audio::playSound()
 	return 0;
 }
 
+int Audio::attAudio(const char* filename, bool isMusic) {
+	if (isMusic) {
+		music = Mix_LoadMUS(filename);
+		this->isMusic = isMusic;
+	}
+	else {
+		sound = Mix_LoadWAV(filename);
+	}
+	return 0;
+}
+
 int Audio::freeAudio() {
 	if (isMusic) {
 		Mix_FreeMusic(music);

@@ -15,6 +15,7 @@ public:
 	//play the audio
 	int playMusic();
 	int playSound();
+	int attAudio(const char* filename, bool isMusic);
 	int freeAudio();
 	//run the following method once at the start and end of the program
 	static int initMixer();	
