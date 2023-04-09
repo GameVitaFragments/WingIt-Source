@@ -89,8 +89,12 @@ public:
 
 		_renderer = new Renderer(_window, _render_flags);
 		_eventhandler = new EventHandler();
+
+		Audio::initMixer();
+		TTF_Init();
 	}
 	~MainMenu() {
+		Audio::quitMixer();
 		delete _eventhandler;
 		delete _renderer;
 		SDL_DestroyWindow(_window);
@@ -105,6 +109,8 @@ public:
 		wallpaper.setPos({ 0, 0 });
 		wallpaper.setSize({ (int)_width, (int)_height });
 
+		Audio menuMusic("src/Assets/Audio/menumusic.mp3", true);
+
 		ui::Button startButton(_renderer, "src/Assets/play1.png", false, 1, {100, 600});
 		ui::Button endButton(_renderer, "src/Assets/quit1.png", false, 1, {800, 600});
 		//startButton.setPos({ 100, 600 });
@@ -115,9 +121,13 @@ public:
 			_renderer->ClearScreen();
 			_renderer->update();
 
+			menuMusic.playMusic();
+			menuMusic.setVolume(200);
+
 			SDL_Event event;
 			_eventhandler->setInput(&event);
 			_isGameClosed = _eventhandler->isQuit() || startButton.clicked;
+
 
 
 			LAST = NOW;
@@ -136,6 +146,7 @@ public:
 			SDL_Delay(1000 / _fps);
 			_lastFrameTick = SDL_GetTicks64();
 		}
+		menuMusic.freeAudio();
 		if (!GameClosed) {
 			game.update();
 		}

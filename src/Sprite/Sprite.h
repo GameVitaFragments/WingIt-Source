@@ -2,6 +2,8 @@
 #include "../Renderer/Renderer.h"
 #include "../Collider/Collider.h"
 
+class Player;
+
 
 class Sprite:
 	public Drawable
@@ -14,7 +16,7 @@ public:
 
 	virtual void update(SDL_Renderer* rend);
 	Collider* getCol();
-	void isCollided();
+	virtual void isCollided(Player*);
 	virtual void Destroy();
 private:
 	bool CollisionDet = false;

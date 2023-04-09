@@ -2,9 +2,11 @@
 #include "SDL2/SDL.h"
 #include "../Error/Error.h"
 #include "../Renderer/Renderer.h"
-#include "../Sprite/Sprite.h"
 #include "../Player/Player.h"
+#include "../Sprite/Sprite.h"
 #include "../Event/EventHandler.h"
+#include "../Audio/Audio.h"
+#include "../StaticText/StaticText.h"
 
 class Game {
 	private:

@@ -7,9 +7,9 @@ class StaticText:
 	public Drawable
 {
 public:
-	StaticText(Renderer*, const char*);
+	StaticText(Renderer*, const char*,SDL_Color);
 	~StaticText();
-	void CacheNumbers(Renderer*);
+	void CacheNumbers(Renderer*, SDL_Color);
 	void RenderNumber(int);
 
 private:

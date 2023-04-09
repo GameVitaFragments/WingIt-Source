@@ -6,6 +6,7 @@ Audio::Audio(const char* filename, bool isMusic) {
 		//m = Mix_LoadMUS(filename);
 		//music = m;
 		music = Mix_LoadMUS(filename);
+		this->isMusic = isMusic;
 	}
 	else {
 		//Mix_Chunk* m = NULL;
@@ -17,8 +18,6 @@ Audio::Audio(const char* filename, bool isMusic) {
 }
 
 Audio::~Audio() {
-	Mix_FreeChunk(sound);
-	Mix_FreeMusic	(music);
 }
 
 void Audio::setVolume(int v)
@@ -50,6 +49,16 @@ int Audio::playSound()
 	return 0;
 }
 
+int Audio::freeAudio() {
+	if (isMusic) {
+		Mix_FreeMusic(music);
+	}
+	else {
+		Mix_FreeChunk(sound);
+	}
+	return 0;
+}
+
 int Audio::initMixer()
 {
 	Mix_Init(MIX_INIT_MP3);
@@ -58,24 +67,31 @@ int Audio::initMixer()
 		printf("SDL_mixer couldn't init. Err: %s\n", Mix_GetError);
 		return -1;
 	}
-	setVolume(80);
 	return 0;
 }
 
 int Audio::quitMixer()
 {
-	Mix_FreeChunk(sound);
-	Mix_FreeMusic(music);
 	Mix_Quit();
 	return 0;
 }
 
 void Audio::togglePlay()
 {
-	if (Mix_PausedMusic() == 1) {
-		Mix_ResumeMusic();
+	if (isMusic) {
+		if (Mix_PausedMusic() == 1) {
+			Mix_ResumeMusic();
+		}
+		else {
+			Mix_PauseMusic();
+		}
 	}
 	else {
-		Mix_PauseMusic();
+		if (Mix_Paused(-1) == 1) {
+			Mix_Resume(-1);
+		}
+		else {
+			Mix_Pause(-1);
+		}
 	}
 }

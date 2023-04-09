@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include "../Error/Error.h"
 #include <iostream>
 
 class Audio {
@@ -14,12 +15,14 @@ public:
 	//play the audio
 	int playMusic();
 	int playSound();
+	int freeAudio();
 	//run the following method once at the start and end of the program
-	int initMixer();	
-	int quitMixer();
+	static int initMixer();	
+	static int quitMixer();
 	void togglePlay();
 private:
-	Mix_Music* music;
-	Mix_Chunk* sound;
-	int volume;
+	Mix_Music* music = nullptr;
+	Mix_Chunk* sound = nullptr;
+	int volume = (MIX_MAX_VOLUME * 80) / 100;
+	int isMusic = false;
 };

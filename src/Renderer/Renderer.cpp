@@ -81,7 +81,7 @@ SDL_Texture* Renderer::loadTex(Renderer* rend,const char* path)
 
 }
 
-SDL_Texture* Renderer::loadFont(Renderer* rend, const char* _text)
+SDL_Texture* Renderer::loadFont(Renderer* rend, const char* _text ,const SDL_Color color)
 {
 
 	TTF_Font* font;
@@ -94,9 +94,10 @@ SDL_Texture* Renderer::loadFont(Renderer* rend, const char* _text)
 
 	SDL_Surface* text;
 	// Set color to black
-	SDL_Color color = { 255, 255, 255 };
+	//SDL_Color color = { 250, 250, 0 };
 
 	text = TTF_RenderText_Solid(font, _text, color);
+	//printf("%d %d %d\n", color.r, color.g, color.b);
 	if (!text) {
 		printf("Failed to render text: %s", SDL_GetError());
 	}

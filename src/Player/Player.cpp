@@ -11,7 +11,7 @@ Player::Player(Renderer* rend, const char* path, bool _collisionDet, EventHandle
 	this->gravity = gravity;
 	gunBlastForce = gravity * 1.5;
 	setPos({ x, y });
-	setSize({ (int)(getWidth() * scale), (int)(getHeight() * scale)});
+	setSize({ (int)(getWidth() * scale), (int)(getHeight() * scale) });
 	Hearts = 5;
 	coolDown = 2500;
 	underCooldown = false;
@@ -45,7 +45,7 @@ void Player::checkCollision(Renderer* _rend)
 			colY = true;
 		}
 		if (colX && colY) {
-			col.second->getSprite()->isCollided();
+			col.second->getSprite()->isCollided(this);
 		}
 	}
 }
@@ -70,13 +70,15 @@ void Player::update(SDL_Renderer* rend) {
 
 	if (getPosX() <= Global::wallWidth) {
 		float bounceForce = 4;
-		this->vel.x = bounceForce *  1;
+		this->vel.x = bounceForce * 1;
 		this->vel.y = bounceForce * -1;
+		Hearts -= 1;
 	}
 	if (getPosX() >= Global::ScreenWidth - Global::wallWidth - getWidth()) {
 		float bounceForce = 4;
 		this->vel.x = bounceForce * -1;
 		this->vel.y = bounceForce * -1;
+		Hearts -= 1;
 	}
 
 	if (getPosY() + getWidth() < 0) {
@@ -88,9 +90,8 @@ void Player::update(SDL_Renderer* rend) {
 	if (getPosY() > Global::ScreenWidth) {
 		setPosY(-getWidth());
 		this->vel.y /= 4;
+		Hearts -= 1;
 	}
-
-	//std::cout << getPosY() << std::endl;
 
 	if (this->vel.x > 0) {
 		facingLeft = false;
@@ -107,7 +108,8 @@ void Player::update(SDL_Renderer* rend) {
 		//angle += M_PI;
 		this->vel.x = gunBlastForce * -cos(angle);
 		this->vel.y = gunBlastForce * -sin(angle);
-	} else {
+	}
+	else {
 		underCooldown = true;
 	}
 
