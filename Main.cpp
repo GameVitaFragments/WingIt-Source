@@ -124,9 +124,9 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	//Game game(1280, 720, "Game");
-	//game.update();
-	MainMenu mm(1280, 720, "Game");
-	mm.update();
+	Game game(1280, 720, "Game");
+	game.update();
+	//MainMenu mm(1280, 720, "Game");
+	//mm.update();
 	return 0;
 }
