@@ -11,11 +11,14 @@ private:
 	double dt;
 	float gravity;
 	float gunBlastForce;
-	Uint32 timeSinceShot;
 
 public:
 	Player(Renderer*, const char*, bool, EventHandler*, int, int, float, float);
 	void checkCollision(Renderer*);
 	void update(SDL_Renderer* rend);
 	void getDt(double);
+	int coolDown;
+	bool underCooldown;
+	int Hearts;
+	Uint32 timeSinceShot;
 };

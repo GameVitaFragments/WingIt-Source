@@ -217,7 +217,7 @@ public:
 	}
 };
 
-Game::Game(unsigned int w, unsigned int h, const char* t) {
+Game::Game(unsigned int w, unsigned int h, const char* t, SDL_Window* win, Renderer* ren, EventHandler* even) {
 	_width = w;
 	_height = h;
 	_title = t;
@@ -226,8 +226,13 @@ Game::Game(unsigned int w, unsigned int h, const char* t) {
 	_fps = 60;
 	Global::ScreenHeight = _height;
 	Global::ScreenWidth = _width;
-	error::checkReturnCode(SDL_Init(SDL_INIT_EVERYTHING));
+	//error::checkReturnCode(SDL_Init(SDL_INIT_EVERYTHING));
 
+	_window = win;
+	_renderer = ren;
+	_eventhandler = even;
+	/*
+	
 	_window = (SDL_Window*)error::checkReturnPointer(SDL_CreateWindow(
 		_title,
 		SDL_WINDOWPOS_CENTERED,
@@ -237,6 +242,7 @@ Game::Game(unsigned int w, unsigned int h, const char* t) {
 	_renderer = new Renderer(_window, _render_flags);
 	_eventhandler = new EventHandler();
 	_lastFrameTick = SDL_GetTicks64();
+	*/
 }
 
 int Game::getTicks() {
@@ -247,6 +253,12 @@ void Game::_init() {
 }
 
 void Game::update() {
+
+	Sprite wallpaper(_renderer, "src/Assets/sky.png", true);
+	wallpaper.setPos({ 0, 0 });
+	wallpaper.setSize({ (int)_width, (int)_height });
+
+
 	RougeRock rok(_renderer, "src/Assets/airgunfire.png", true, 10.0f / 60);
 	rok.setPos({ 100, 100 });
 	rok.setSize({ 50, 50 });
@@ -262,21 +274,27 @@ void Game::update() {
 
 	Wall* leftwalls[3];
 	for (int i = 0; i < 3; i++) {
-		leftwalls[i] = new Wall(_renderer, "src/assets/Wallpaper.png", true, 10);
+		leftwalls[i] = new Wall(_renderer, "src/assets/wall.png", true, 10);
 		leftwalls[i]->setPos({0, -i * Global::ScreenHeight});
 		leftwalls[i]->setSize({Global::wallWidth, Global::ScreenHeight});
 	}
 
 	Wall* rightwalls[3];
 	for (int i = 0; i < 3; i++) {
-		rightwalls[i] = new Wall(_renderer, "src/assets/Wallpaper.png", true, 10);
+		rightwalls[i] = new Wall(_renderer, "src/assets/wall-rev.png", true, 10);
 		rightwalls[i]->setPos({Global::ScreenWidth - Global::wallWidth, -i * Global::ScreenHeight});
-		rightwalls[i]->setSize({Global::wallWidth, Global::ScreenHeight});
+		rightwalls[i]->setSize({Global::wallWidth, Global::ScreenHeight + 10});
 	}
+
+	Sprite playerCoolDownTimer(_renderer, "src/Assets/cooldowntimer.png", false);
+	playerCoolDownTimer.setPos({ 10, 10 });
+	int playerCoolDownTimerMaxSize = 100;
 
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double dt = 0;
+
+
 	Player player(_renderer, "src/Assets/bird1.png", true, _eventhandler, 640, 50, 0.1, 3.0f);
 
 	while (!_isGameClosed) {
@@ -286,6 +304,16 @@ void Game::update() {
 		SDL_Event event;
 		_eventhandler->setInput(&event);
 		_isGameClosed = _eventhandler->isQuit();
+
+		float fraction = (SDL_GetTicks() - player.timeSinceShot) / (float)player.coolDown;
+		if (fraction < 1) {
+			playerCoolDownTimer.setWidth(playerCoolDownTimerMaxSize * fraction);
+			std::cout << (SDL_GetTicks() - player.timeSinceShot) / (float)player.coolDown << std::endl;
+		}
+		else {
+			playerCoolDownTimer.setWidth(playerCoolDownTimerMaxSize);
+		}
+		playerCoolDownTimer.setHeight(50);
 
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
@@ -305,8 +333,8 @@ void Game::update() {
 }
 
 Game::~Game() {
-	delete _eventhandler;
-	delete _renderer;
-	SDL_DestroyWindow(_window);
-	SDL_Quit();
+	//delete _eventhandler;
+	//delete _renderer;
+	//SDL_DestroyWindow(_window);
+	//SDL_Quit();
 }

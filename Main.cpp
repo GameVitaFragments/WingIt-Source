@@ -1,6 +1,10 @@
-#include<stdio.h>
+#include <iostream>
+
 #include <SDL2/SDL.h>
+
 #include "src/Game/Game.h"
+
+bool GameClosed = false;
 
 
 namespace ui {
@@ -10,40 +14,46 @@ namespace ui {
 		float minSizeRatio = 1.0;
 		float initialWidth;
 		float initialHeight;
-		bool clicked = false;
+		vec::Vec2 initialPos;
 
 	public:
-		Button(Renderer* rend, const char* path, bool _collisionDet, int scale) : Sprite(rend, path, _collisionDet) {
+		bool clicked = false;
+
+		Button(Renderer* rend, const char* path, bool _collisionDet, int scale, vec::Vec2 pos) : Sprite(rend, path, _collisionDet) {
 			setSize({ ((int)getWidth() * scale), ((int)getHeight() * scale) });
+			initialPos = pos;
+			setPos({pos.x, pos.y});
 			initialWidth = getWidth();
 			initialHeight = getHeight();
 			setSize({ (int)initialWidth, (int)initialHeight });
 		}
 
-		void hover(int mx, int my) {
+		void hover(int mx, int my, bool click) {
 			if (mx > getPosX() && mx < (getPosX() + getWidth()) && my > getPosY() && my < (getPosY() + getHeight())) {
-				if (getWidth() < (maxSizeRatio * initialWidth)) {
-					float dx = ((maxSizeRatio * initialWidth) - getWidth());
-					setWidth(getWidth() + dx);
+				int currWidth = getWidth();
+				if (currWidth < (int)(maxSizeRatio * initialWidth)) {
+					float dx = ((int)(maxSizeRatio * initialWidth) - currWidth);
+					setWidth(currWidth + dx);
 					setPosX(getPosX() - dx / 2.0);
 				}
-				//if (getHeight() < (maxSizeRatio * initialHeight)) {
-				//	float dx = ((maxSizeRatio * initialHeight) - getHeight());
-				//	setHeight(getHeight() + dx);
-				//	setPosY(getPosY() - dx / 2.0);
-				//}
+				if (getHeight() < (int)(maxSizeRatio * initialHeight)) {
+					float dx = ((int)(maxSizeRatio * initialHeight) - getHeight());
+					setHeight(getHeight() + dx);
+					setPosY(getPosY() - dx / 2.0);
+				}
+				if (click) {
+					clicked = true;
+				}
 			}
 			else {
 				if (getWidth() > initialWidth) {
-					float dx = getWidth() - initialWidth;
-					setWidth(getWidth() - dx);
-					setPosX(getPosX() + dx / 2.0);
+					setWidth(initialWidth);
+					setPosX(initialPos.x);
 				}
-				//if (getHeight() > initialHeight) {
-				//	float dx = getHeight() - initialHeight;
-				//	setHeight(getHeight() - dx);
-				//	setPosY(getPosY() + dx / 2.0);
-				//}
+				if (getHeight() > initialHeight) {
+					setHeight(initialHeight);
+					setPosY(initialPos.y);
+				}
 			}
 		}
 	};
@@ -95,16 +105,20 @@ public:
 		wallpaper.setPos({ 0, 0 });
 		wallpaper.setSize({ (int)_width, (int)_height });
 
-		ui::Button startButton(_renderer, "src/Assets/play1.png", false, 1);
-		startButton.setPos({ 100, 600 });
+		ui::Button startButton(_renderer, "src/Assets/play1.png", false, 1, {100, 600});
+		ui::Button endButton(_renderer, "src/Assets/quit1.png", false, 1, {800, 600});
+		//startButton.setPos({ 100, 600 });
+		
+		Game game(_width, _height, _title, _window, _renderer, _eventhandler);
 
-		while (!_isGameClosed) {
+		while (!_isGameClosed && !GameClosed) {
 			_renderer->ClearScreen();
 			_renderer->update();
 
 			SDL_Event event;
 			_eventhandler->setInput(&event);
-			_isGameClosed = _eventhandler->isQuit();
+			_isGameClosed = _eventhandler->isQuit() || startButton.clicked;
+
 
 			LAST = NOW;
 			NOW = SDL_GetPerformanceCounter();
@@ -115,18 +129,23 @@ public:
 			int mx = _eventhandler->getPos('x');
 			int my = _eventhandler->getPos('y');
 
-			startButton.hover(mx, my);
+			startButton.hover(mx, my, _eventhandler->getMSInput('1'));
+			endButton.hover(mx, my, _eventhandler->getMSInput('1'));
+			GameClosed = endButton.clicked;
 
 			SDL_Delay(1000 / _fps);
 			_lastFrameTick = SDL_GetTicks64();
+		}
+		if (!GameClosed) {
+			game.update();
 		}
 	}
 };
 
 int main(int argc, char* argv[]) {
-	Game game(1280, 720, "Game");
-	game.update();
-	//MainMenu mm(1280, 720, "Game");
-	//mm.update();
+	//Game game(1280, 720, "Game");
+	//game.update();
+	MainMenu mm(1280, 720, "Game");
+	mm.update();
 	return 0;
 }

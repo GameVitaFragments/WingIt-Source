@@ -24,13 +24,13 @@ void Sprite::update(SDL_Renderer* rend)
 {
 	Drawable::update(rend);
 	//printf("%d\n",CollisionDet);
-	if (!CollisionDet || col == nullptr)
+	/*if (!CollisionDet || col == nullptr)
 		return;
 
 	SDL_SetRenderDrawColor(rend, 255, 255, 255, 255);
 	SDL_Rect n_rect = { rect.x, rect.y,col->getBoundBox().x-rect.x,col->getBoundBox().y-rect.y};
 	error::checkReturnCode(SDL_RenderDrawRect(rend, &n_rect));
-	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);*/
 	
 
 }

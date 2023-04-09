@@ -12,6 +12,9 @@ Player::Player(Renderer* rend, const char* path, bool _collisionDet, EventHandle
 	gunBlastForce = gravity * 1.5;
 	setPos({ x, y });
 	setSize({ (int)(getWidth() * scale), (int)(getHeight() * scale)});
+	Hearts = 5;
+	coolDown = 2500;
+	underCooldown = false;
 }
 
 void Player::checkCollision(Renderer* _rend)
@@ -76,6 +79,19 @@ void Player::update(SDL_Renderer* rend) {
 		this->vel.y = bounceForce * -1;
 	}
 
+	if (getPosY() + getWidth() < 0) {
+		float bounceForce = 7;
+		setPosY(Global::ScreenHeight);
+		setPosX(Global::ScreenWidth - getPosX() - getWidth());
+		this->vel.y = bounceForce * -1;
+	}
+	if (getPosY() > Global::ScreenWidth) {
+		setPosY(-getWidth());
+		this->vel.y /= 4;
+	}
+
+	//std::cout << getPosY() << std::endl;
+
 	if (this->vel.x > 0) {
 		facingLeft = false;
 	}
@@ -85,11 +101,14 @@ void Player::update(SDL_Renderer* rend) {
 
 
 	//std::cout << cos(angle) << ", " << -sin(angle) << std::endl;
-	if (event->getMSInput('1') && (SDL_GetTicks() - timeSinceShot > 1000)) {
+	if (event->getMSInput('1') && (SDL_GetTicks() - timeSinceShot > coolDown)) {
 		timeSinceShot = SDL_GetTicks();
+		underCooldown = false;
 		//angle += M_PI;
 		this->vel.x = gunBlastForce * -cos(angle);
 		this->vel.y = gunBlastForce * -sin(angle);
+	} else {
+		underCooldown = true;
 	}
 
 	this->vel.x += this->acc.x * this->dt / 1000.0;

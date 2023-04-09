@@ -24,7 +24,7 @@ class Game {
 		void _init();
 
 	public:
-		Game(unsigned int, unsigned int, const char*);
+		Game(unsigned int w, unsigned int h, const char* t, SDL_Window* win, Renderer* ren, EventHandler* even);
 		~Game();
 		void update();
 
