@@ -17,6 +17,8 @@ public:
 	void checkCollision(Renderer*);
 	void update(SDL_Renderer* rend);
 	void getDt(double);
+	void resetVelocity();
+	void setGravity(float);
 	int coolDown;
 	bool underCooldown;
 	int Hearts;

@@ -362,9 +362,18 @@ void Game::update() {
 			if (clicked) {
 				player.Hearts = 5;
 				points = 0;
+				player.coolDown = 2500;
+				player.underCooldown = false;
 				dt = 0;
 
 				player.setPos({ 640, 50 });
+				player.resetVelocity();
+				player.setGravity(3.0f);
+
+				SDL_Delay(1000 / _fps);
+				_lastFrameTick = SDL_GetTicks64();
+				LAST = NOW;
+				NOW = SDL_GetPerformanceCounter();
 
 				delete ReplayButton;
 				ReplayButton = nullptr;
@@ -378,7 +387,7 @@ void Game::update() {
 			deathSound.playSound();
 			deathSound.setVolume(200);
 			lowHealthSound.attAudio("src/Assets/Audio/owsong.wav", false);
-
+			player.setGravity(0.0f);
 			ReplayButton= new ui::Button(_renderer, "src/Assets/play1.png", false, 1, { 800,600 });
 			_renderer->ClearScreen();
 			_renderer->update();

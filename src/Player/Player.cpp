@@ -54,6 +54,16 @@ void Player::getDt(double dt) {
 	this->dt = dt;
 }
 
+void Player::resetVelocity()
+{
+	vel = { 0, 0 };
+}
+
+void Player::setGravity(float _gravity)
+{
+	gravity = _gravity;
+}
+
 void Player::update(SDL_Renderer* rend) {
 	Sprite::update(rend);
 	this->acc.y = gravity;
