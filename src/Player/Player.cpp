@@ -13,7 +13,7 @@ Player::Player(Renderer* rend, const char* path, bool _collisionDet, EventHandle
 	setPos({ x, y });
 	setSize({ (int)(getWidth() * scale), (int)(getHeight() * scale) });
 	Hearts = 5;
-	coolDown = 2500;
+	coolDown = 750;
 	underCooldown = false;
 }
 
@@ -76,7 +76,7 @@ void Player::update(SDL_Renderer* rend) {
 	float angle = atan2(my - getPosY(), mx - getPosX());
 
 	reCentre();
-	setAngle((int)(180 * angle / M_PI));
+	setAngle((int)(180 * (atan2(vel.y, vel.x)) / M_PI) + 90);
 
 	if (getPosX() <= Global::wallWidth) {
 		float bounceForce = 4;

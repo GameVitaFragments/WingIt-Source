@@ -9,7 +9,7 @@ bool GameClosed = false;
 
 namespace ui {
 	class Button : public Sprite {
-	private:
+	public:
 		float maxSizeRatio = 1.3;
 		float minSizeRatio = 1.0;
 		float initialWidth;
@@ -90,6 +90,8 @@ public:
 		_renderer = new Renderer(_window, _render_flags);
 		_eventhandler = new EventHandler();
 
+		error::checkReturnCode(SDL_SetWindowFullscreen(_window, SDL_WINDOW_FULLSCREEN));
+
 		Audio::initMixer();
 		TTF_Init();
 	}
@@ -105,14 +107,26 @@ public:
 		Uint64 LAST = 0;
 		double dt = 0;
 
-		Sprite wallpaper(_renderer, "src/Assets/TitleScreen.png", false);
+		Sprite wallpaper(_renderer, "src/Assets/mainmenu.png", false);
 		wallpaper.setPos({ 0, 0 });
 		wallpaper.setSize({ (int)_width, (int)_height });
 
+		Sprite title(_renderer, "src/Assets/TITLEFONT.png", false);
+		title.setSize({ title.getWidth() / 3, title.getHeight() / 3});
+		title.setPos({ 960 - title.getWidth() / 2, 100});
+
 		Audio menuMusic("src/Assets/Audio/menumusic.mp3", true);
 
-		ui::Button startButton(_renderer, "src/Assets/play1.png", false, 1, {100, 600});
-		ui::Button endButton(_renderer, "src/Assets/quit1.png", false, 1, {800, 600});
+		ui::Button startButton(_renderer, "src/Assets/PLAYFONT.png", false, 1, {100, 600});
+		startButton.initialWidth = startButton.getWidth() / 6;
+		startButton.initialHeight = startButton.getHeight() / 6;
+		startButton.initialPos.x = 960 - startButton.initialWidth / 2;
+		startButton.initialPos.y = 350;
+		ui::Button endButton(_renderer, "src/Assets/QUITFONT.png", false, 1, {800, 600});
+		endButton.initialWidth = endButton.getWidth() / 6;
+		endButton.initialHeight = endButton.getHeight() / 6;
+		endButton.initialPos.x = 960 - endButton.initialWidth / 2;
+		endButton.initialPos.y = 480;
 		//startButton.setPos({ 100, 600 });
 		
 		Game game(_width, _height, _title, _window, _renderer, _eventhandler);

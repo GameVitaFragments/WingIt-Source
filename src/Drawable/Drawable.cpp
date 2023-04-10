@@ -6,7 +6,7 @@ void Drawable::update(SDL_Renderer* rend) {
 
 	if (tex != nullptr) {
 		if (facingLeft) {
-			SDL_RenderCopyEx(rend, tex, NULL, &rect, angle, &centre, SDL_FLIP_VERTICAL);
+			SDL_RenderCopyEx(rend, tex, NULL, &rect, angle, &centre, SDL_FLIP_HORIZONTAL);
 		}
 		else {
 			SDL_RenderCopyEx(rend, tex, NULL, &rect, angle, &centre, SDL_FLIP_NONE);

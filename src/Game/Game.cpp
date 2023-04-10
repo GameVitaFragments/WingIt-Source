@@ -2,6 +2,10 @@
 #include <iostream>
 #include <vector>
 
+int randInt(int a, int b) {
+	return (rand() % (b - a)) + a;
+}
+
 namespace ui {
 	class Button : public Sprite {
 	private:
@@ -58,13 +62,13 @@ class  HealthUI
 {
 public:
 	HealthUI(Renderer* rend, const char* path, const vec::Vec2 pos) :
-		sp(rend, path, false), text(rend, "5", {200,200,200,255})
+		sp(rend, path, false), text(rend, "5", {0,0,0,255})
 	{
 		sp.setPos({ pos.x,pos.y });
 		sp.setSize({sp.getWidth()/10,sp.getHeight()/10});
 		
 		
-		text.CacheNumbers(rend, { 200,200,200,255 });
+		text.CacheNumbers(rend, { 0,0,0,255 });
 		text.RenderNumber(5);
 		text.setPos({ pos.x + sp.getWidth() + 10,pos.y });
 
@@ -164,7 +168,7 @@ public:
 		int rockType = rand() % 2;
 		if (rockType) {
 			int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth - rect.w - wallWidth)) + wallWidth);
-			Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
+			Spawn({ SpAreaX ,-randInt(100, 1000) }, { rect.w,rect.h });
 			_velocity.y = 10;
 			//printf("%d \n", SpAreaX);
 		}
@@ -172,14 +176,14 @@ public:
 			int spawnPos = rand() % 2;
 			if (spawnPos) {
 				int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth / 2 - rect.w - wallWidth)) + wallWidth);
-				Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
+				Spawn({ SpAreaX ,-randInt(100, 1000) }, { rect.w,rect.h });
 				_velocity.x = -3;
 				_velocity.y = 10;
 				//printf("%d \n", SpAreaX);
 			}
 			else {
 				int SpAreaX = (rand() % (wallWidth - (Global::ScreenWidth / 2 - rect.w - wallWidth)) + Global::ScreenWidth / 2);
-				Spawn({ SpAreaX ,-rect.y }, { rect.w,rect.h });
+				Spawn({ SpAreaX ,-randInt(100, 1000) }, { rect.w,rect.h });
 				_velocity.x = 3;
 				_velocity.y = 10;
 				//printf("%d \n", SpAreaX);
@@ -292,14 +296,16 @@ void Game::update() {
 	wallpaper.setPos({ 0, 0 });
 	wallpaper.setSize({ (int)_width, (int)_height });
 
-	RougeRock* rocks[3];
-	for (int i = 0; i < 3; i++) {
-		rocks[i] = new RougeRock(_renderer, "src/assets/rock2.png", true, ((float)i + 1) / 10);
-
+	RougeRock* rocks[8];
+	for (int i = 0; i < 8; i++) {
+		rocks[i] = new RougeRock(_renderer, "src/assets/rock2.png", true, ((float)i + 1) / 40);
+		rocks[i]->setPos({ -1000,-(randInt(100, 1000))}); rocks[i]->setSize({75,75});
 	}
-	rocks[0]->setPos({ -1000,-200 }); rocks[0]->setSize({75,75 });
+	/*rocks[0]->setPos({ -1000,-200 }); rocks[0]->setSize({75,75 });
 	rocks[1]->setPos({ -1000,-600 }); rocks[1]->setSize({75,75 });
 	rocks[2]->setPos({ -1000,-100 }); rocks[2]->setSize({75,75});
+	rocks[3]->setPos({ -1000,-400 }); rocks[3]->setSize({75,75});
+	rocks[4]->setPos({ -1000,-700 }); rocks[4]->setSize({75,75});*/
 
 	Wall* leftwalls[3];
 	for (int i = 0; i < 3; i++) {
@@ -362,7 +368,7 @@ void Game::update() {
 			if (clicked) {
 				player.Hearts = 5;
 				points = 0;
-				player.coolDown = 2500;
+				player.coolDown = 750;
 				player.underCooldown = false;
 				dt = 0;
 

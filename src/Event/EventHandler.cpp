@@ -8,6 +8,9 @@ void EventHandler::setInput(SDL_Event* event) {
         }
 		if (event->type == SDL_KEYDOWN) {
             switch (event->key.keysym.scancode) {
+            case SDL_SCANCODE_ESCAPE:
+                _quit = true;
+                break;
             case SDL_SCANCODE_W:
             case SDL_SCANCODE_UP:
                 _w = true;
