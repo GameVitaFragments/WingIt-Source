@@ -4,6 +4,12 @@ Submission for GameVita in Apoorv 2023 !!!
 
 Update: Achieved the "Award for Best Implementation"
 
+## How to setup development environment?
+
+1. Download or clone the source code
+2. Use any text editor or IDE you prefer
+3. Setup a http server using python or node.js and host the index.html
+
 ## How to Contribute ?
 
 ### Bug Report and Fix
